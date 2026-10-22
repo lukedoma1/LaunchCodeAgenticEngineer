@@ -1,0 +1,67 @@
+Repository Summary: LaunchCodeAgenticEngineer (module_1)
+=========================================================
+
+What it is
+----------
+A Docker-based development environment for LaunchCode's "Agentic Programming"
+course. It gives students a consistent, pre-configured Python 3.12 setup with
+AI/ML and web libraries, Anthropic Claude integration, and AI coding agents
+(Claude Code and OpenCode) ready to use.
+
+Key files
+---------
+- Dockerfile
+    Builds on python:3.12-slim. Installs system tools (git, curl, nano, node/npm),
+    the Python packages in requirements.txt, the Claude Code CLI, OpenCode, and
+    ngrok. Copies in Claude Code settings plus a custom status line, and adds
+    shell niceties (custom prompt, ls aliases, python/pip aliases).
+
+- requirements.txt
+    Python dependencies: anthropic, streamlit, python-dotenv, pandas, numpy,
+    slack_sdk, Google API/auth libraries (for Gmail), requests, fastapi, flask,
+    uvicorn, pydantic, httpx.
+
+- docker-entrypoint.sh
+    Keeps students logged in to Claude Code across container runs. If a saved
+    credential exists on the shared "claude-auth" volume, it restores it and
+    skips Claude's first-run onboarding. A background loop copies the credential
+    back to the volume whenever it changes (atomic temp-file + mv). It then
+    exec's the requested command (bash by default).
+
+- settings.json / statusline.sh
+    Claude Code config that turns on a custom status line. The script (run with
+    node) shows the model, current directory, context-window usage, and the
+    session's total tokens/cost.
+
+- module_x.py
+    Small, deterministic business-rule functions (name normalization,
+    tier-based discounts, priority classification, order summaries, project
+    code validation). Used for a "Session A" exercise: an agent writes unit
+    tests for these functions without changing the module.
+
+- module_y.py
+    Formatting/reporting helpers (currency formatting, report titles, email
+    masking, summary lines, markdown tables, text truncation). They work but
+    have few docstrings. Used for a "Session B" exercise: an agent adds
+    docstrings and updates the README without touching tests. Together with
+    module_x.py, it shows how to run parallel agent sessions.
+
+- agent_docker_check.md
+    A sample prompt telling an agent to build the Docker image, report
+    warnings/errors, and say whether the setup is ready, without pushing or
+    deploying anything.
+
+- README.md / CLAUDE.md
+    Build/run instructions (local build or pre-built image from a registry),
+    volume mounts for the workspace and Claude auth, port 8501 for Streamlit,
+    and Gmail API credential setup (credentials.json / token.json, both meant
+    to be gitignored).
+
+Typical usage
+-------------
+  docker build -t agentic_engineer_1 .
+  docker run -it --rm -v claude-auth:/claude-auth -p 8501:8501 \
+      -v "$PWD":/workspace agentic_engineer_1
+
+Inside the container, students run `claude` to use Claude Code, or start
+Streamlit apps with `streamlit run app.py` (served at http://localhost:8501).

@@ -1,0 +1,27 @@
+LaunchCodeAgenticEngineer - Repository Summary
+==============================================
+
+This repo holds the course materials for LaunchCode's "Agentic Engineer"
+(Agentic Programming) course. It has three modules. Each one is a
+self-contained Docker development environment with Python, AI/ML libraries,
+the Anthropic SDK and the Claude Code CLI. Each module builds on the one
+before it.
+
+module_1/ - Base environment: Dockerfile, entrypoint, Claude Code settings,
+            status line, CLAUDE.md and sample Python files (module_x.py,
+            module_y.py). A shared "claude-auth" Docker volume keeps the
+            Claude login across containers.
+
+module_2/ - Adds Slack and Gmail MCP servers, custom skills (check-gmail,
+            send-email, send-slack-message, summarize-session), sub-agents
+            (code-reviewer, email-summarize) and sample docs (PRD, rubric,
+            iteration log).
+
+module_3/ - Multi-agent orchestration and evaluation: role agents (planner,
+            implementer, reviewer, project-manager, docs-reviewer), a custom
+            MCP server with retrieval/storage (mcp/), persistent memory
+            (.memory/), an eval harness (eval/: regression, holdout, rubric
+            and routing tests, orchestrator), plus design docs on routing,
+            tool grants, retrieval quality and calibration.
+
+Top-level files: README.md, .gitignore, test.txt (a scratch test file).
